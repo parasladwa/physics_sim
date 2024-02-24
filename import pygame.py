@@ -11,7 +11,7 @@ timer = pygame.time.Clock()
 
 
 
-#game vars
+#game vars    
 wall_thickness =10
 gravity = 0.5
 bounce_stop = 0.3
