@@ -49,7 +49,8 @@ class Node:
     def draw_node(self):
         pygame.draw.circle(screen, self.color, self.posn, self.radius)
 
-
+    def forces(main_node, other):
+        
 
 
 
@@ -78,7 +79,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-                
+    
                 
     pygame.display.flip()
     
