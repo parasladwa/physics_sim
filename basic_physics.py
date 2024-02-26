@@ -1,4 +1,5 @@
 import pygame
+import time
 
 pygame.init()
 
@@ -155,6 +156,7 @@ while run:
     ball2.update_position(mouse_coords)
     ball1.velocity[1] = ball1.check_gravity()
     ball2.velocity[1] = ball2.check_gravity()
+    time.sleep(1)
     
     walls = draw_walls()
     
