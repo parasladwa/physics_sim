@@ -1,6 +1,5 @@
 import pygame
-
-
+import numpy as np
 
 pygame.init()
 
@@ -37,15 +36,15 @@ def draw_walls():
 
 
 class Node:
-    def __init__(self, radius, mass, color, posn, vel):
-        
+    def __init__(self, radius, mass, color, posn, vel, id, nn):
         self.radius = radius
         self.mass = mass
         self.color = color
         self.posn = posn
         self.vel = vel
-    
-     
+        self.id = id
+        self.nn = nn
+
     def draw_node(self):
         pygame.draw.circle(screen, self.color, self.posn, self.radius)
         
@@ -72,11 +71,23 @@ class Node:
 
 def make_grid():
     nodes = []
+    count = 100
     for i in range(200, 301, 50):
         for k in range(200, 301, 50):
-            node = Node(10, 1, 'white', [i, k], [0, 0])
+            count+=1
+            node = Node(10, 1, 'white', np.array([i, k]), np.array([0, 0]), count, [])
             nodes.append(node)
-    return nodes
+    
+    
+    
+    for node in nodes:
+        for other in nodes:
+            dist = np.linalg.norm(node.posn - other.posn)
+            if dist > 49:
+                node.nn.append(other.id)
+        
+    return node
+
     
     
 nodes = make_grid()
@@ -96,11 +107,11 @@ while run:
     
     
     
+    nodes = make_grid()
     
     
-    
-    for node in nodes:
-        node.draw_node()
+    for n in nodes:
+        n.draw_node()
         
     
     
