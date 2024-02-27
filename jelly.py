@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import time
 
 pygame.init()
 
@@ -70,31 +71,43 @@ class Node:
 
 
 def make_grid():
+    
     nodes = []
-    count = 100
+    count =-1
+    
     for i in range(200, 301, 50):
         for k in range(200, 301, 50):
             count+=1
             node = Node(10, 1, 'white', np.array([i, k]), np.array([0, 0]), count, [])
             nodes.append(node)
-    
-    
-    
+
     for node in nodes:
         for other in nodes:
             dist = np.linalg.norm(node.posn - other.posn)
-            if dist > 49:
+            if dist < 51 and (node.id != other.id):
                 node.nn.append(other.id)
         
-    return node
+    return nodes
 
+    
+    
+    
+    
+def reset(nodes):
+    
+    for node in nodes:
+        node.color = 'white'
+        
+    return nodes
+    
+    
     
     
 nodes = make_grid()
 
-
 run = True
 while run:
+    
     timer.tick(fps)
     screen.fill('black')
     mouse_coords = pygame.mouse.get_pos()
@@ -109,9 +122,25 @@ while run:
     
     nodes = make_grid()
     
+    def draw_all(nodes):
+        for i, n in enumerate(nodes):
+            n.draw_node()
+    draw_all(nodes)
     
-    for n in nodes:
-        n.draw_node()
+
+        
+    for i, node in enumerate(nodes):
+        node.color = 'blue'
+        for i2, node2 in enumerate(nodes):
+            if node2.id in node.nn:
+                node2.color = 'green'
+                draw_all(nodes)
+        pygame.display.flip()
+        time.sleep(1)
+            
+                
+        reset(nodes)
+    
         
     
     
