@@ -14,11 +14,9 @@ timer = pygame.time.Clock()
 
 
 wall_thickness =10
-gravity = 0.5
-bounce_stop = 1
+g = 50
+spring_constant = 1
 
-#track position of mouse to get movement vector
-mouse_trajectory = []
 
 
 
@@ -50,20 +48,29 @@ class Node:
         pygame.draw.circle(screen, self.color, self.posn, self.radius)
         
         
-    def position_update(self, force, dt):
-        self.posn = self.posn + self.vel + force * (dt**2) / (2 * self.mass)
+    def force(self, nodes):
+        force = [0, 0]
+        
+        force[1] += self.mass * g
+        
+        return force
+        # for id in self.nn:
+        #     other = nodes[id]
+        #     force += spring_constant * (other.posn - self.posn)
+    
+    def update_position(self, force, dt=1):
+        self.posn = self.posn + self.vel * dt + force * (dt**2) / (2*self.mass)
         return self.posn
-    
-    def velocity_update(self, f1, f2, dt):
+
+    def update_velocity(self, f1, f2, dt=1):
         self.vel = self.vel + (f1 + f2) * dt / (2*self.mass)
+        return self.vel
     
-    def forces(self, other):
-        f = [ 0, self.mass * gravity ]
-        return f 
     
-    def acceleration(self, force):
-        acc = force / self.mass
-        return acc
+        
+             
+            
+            
     
 
         
@@ -105,21 +112,22 @@ def reset(nodes):
     
 nodes = make_grid()
 
-run = True
+run = True    
+forces = np.array([[0, 0]]*len(nodes))
+
+
 while run:
     
     timer.tick(fps)
     screen.fill('black')
     mouse_coords = pygame.mouse.get_pos()
-    mouse_trajectory.append(mouse_coords)
+
     
 
     
     walls = draw_walls()
     
-    
-    
-    
+
     nodes = make_grid()
     
     def draw_all(nodes):
@@ -128,25 +136,47 @@ while run:
     draw_all(nodes)
     
 
-        
-    for i, node in enumerate(nodes):
-        node.color = 'blue'
-        for i2, node2 in enumerate(nodes):
-            if node2.id in node.nn:
-                node2.color = 'green'
-                draw_all(nodes)
-        pygame.display.flip()
-        time.sleep(1)
-            
-                
-        reset(nodes)
+
+    """WORKS"""
+    # for i, node in enumerate(nodes):
+    #     node.color = 'blue'
+    #     for i2, node2 in enumerate(nodes):
+    #         if node2.id in node.nn:
+    #             node2.color = 'green'
+    #             draw_all(nodes)
+    #     pygame.display.flip()
+    #     time.sleep(1)
+    #     reset(nodes)
+    def new_forces(nodes):
+        forces = [[0, 0]]*len(nodes)
+        for i, node in enumerate(nodes):
+            forces[node.id] = node.mass*g
+        return forces
     
+    forces = new_forces(nodes)
+    
+    
+    for node in nodes:
+        node.posn = node.update_position(forces[node.id])
         
+    draw_all(nodes)
+    pygame.display.flip()
+    
+    old = forces
+    forces_new = new_forces(nodes)
+    
+    for node in nodes:
+        node.vel = node.update_velocity(forces[node.id], old[node.id])
+
+    print(nodes[0].posn)
+    
+
     
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
 
     
                 
