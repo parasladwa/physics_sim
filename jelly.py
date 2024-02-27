@@ -48,8 +48,24 @@ class Node:
      
     def draw_node(self):
         pygame.draw.circle(screen, self.color, self.posn, self.radius)
+        
+        
+    def position_update(self, force, dt):
+        self.posn = self.posn + self.vel + force * (dt**2) / (2 * self.mass)
+        return self.posn
+    
+    def velocity_update(self, f1, f2, dt):
+        self.vel = self.vel + (f1 + f2) * dt / (2*self.mass)
+    
+    def forces(self, other):
+        f = [ 0, self.mass * gravity ]
+        return f 
+    
+    def acceleration(self, force):
+        acc = force / self.mass
+        return acc
+    
 
-    def forces(main_node, other):
         
 
 
@@ -57,7 +73,7 @@ class Node:
 node1 = Node(10, 10, 'white', [250, 250], [0, 0])
 node2 = Node(10, 10, 'white', [200, 250], [0, 0])
 nodes = [node1, node2]
-
+forces = [[0, 0] * len(nodes)]
 
 run = True
 while run:
@@ -66,11 +82,22 @@ while run:
     mouse_coords = pygame.mouse.get_pos()
     mouse_trajectory.append(mouse_coords)
     
+
     
     walls = draw_walls()
     
+    
+    
+    
+    
+    
+    
     for node in nodes:
         node.draw_node()
+        
+    for node in nodes:
+        forces[]
+        
     
     
     
