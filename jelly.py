@@ -70,10 +70,17 @@ class Node:
 
 
 
-node1 = Node(10, 10, 'white', [250, 250], [0, 0])
-node2 = Node(10, 10, 'white', [200, 250], [0, 0])
-nodes = [node1, node2]
-forces = [[0, 0] * len(nodes)]
+def make_grid():
+    nodes = []
+    for i in range(200, 301, 50):
+        for k in range(200, 301, 50):
+            node = Node(10, 1, 'white', [i, k], [0, 0])
+            nodes.append(node)
+    return nodes
+    
+    
+nodes = make_grid()
+
 
 run = True
 while run:
@@ -95,11 +102,6 @@ while run:
     for node in nodes:
         node.draw_node()
         
-    for node in nodes:
-        forces[]
-        
-    
-    
     
     
     for event in pygame.event.get():
